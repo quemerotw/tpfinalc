@@ -128,7 +128,60 @@ int main(int argc, char *argv[])
   		system("pause");
   		destroyObjList(list,size);	
 	} 
+	/*-------------------------------ALTA SOCIO-------------------------------------*/
 	
+	void altaSocio(){
+		int cod;
+		socio = Socio_new();
+		listarConWhere(socio,"activo = FALSE");
+		printf("Ingrese el codigo de socio\n");
+		if(scanf("%d",&cod)){
+			if(socio->findbykey(socio,cod)){
+				socio->setActivo(socio,true);
+				if(!socio->saveObj(socio))
+					printf("Error al acutualizar\n%s\n",getLastError());
+				else
+					printf("Socio Activado\n");
+				system("pause");
+			}
+			else{
+				printf("Socio no encontrado\n");
+				system("pause");
+			}
+		}
+		else{
+			printf("Ingrese un codigo valido\n");
+			return;
+		}
+	}
+		  
+	/*-------------------------------BAJA SOCIO-------------------------------------*/
+	
+	
+	void bajaSocio(){
+		int cod;
+		socio = Socio_new();
+		listarConWhere(socio,"activo = TRUE");
+		printf("Ingrese el codigo de socio\n");
+		if(scanf("%d",&cod)){
+			if(socio->findbykey(socio,cod)){
+				socio->setActivo(socio,true);
+				if(!socio->saveObj(socio))
+					printf("Error al acutualizar\n%s\n",getLastError());
+				else
+					printf("Socio dado de baja\n");
+				system("pause");
+			}
+			else{
+				printf("Socio no encontrado\n");
+				system("pause");
+			}
+		}
+		else{
+			printf("Ingrese un codigo valido\n");
+			return;
+		}
+	}
 	
 	  /*-------------------------------ACTUALIZAR SOCIO-------------------------------------*/
 	  
@@ -712,7 +765,7 @@ int main(int argc, char *argv[])
   		int num;
 		cuota = Cuotas_new();
 		socio = Socio_new();
-		listar(socio);
+		listarConWhere(socio,"activo = TRUE");
 		printf("Ingrese el Codigo de Socio\n");
 		fflush(stdin);
     	if(scanf("%d",&num)){
@@ -882,6 +935,7 @@ int main(int argc, char *argv[])
 				case 6:
 					socio = Socio_new();
 					listarConWhere(socio,"activo = TRUE");
+				case 7:
 					return;
 				default:
 					printf("Ingrese una opcion valida ingresos \n");
@@ -895,10 +949,44 @@ int main(int argc, char *argv[])
 				fflush(stdin);
 			}  			
 		}while(1);
-	  }
+	}
   	
   	
-  	
+	/*-------------------------------MENU ALTA/BAJA------------------------------------*/    
+  	void menuAltaBaja(){
+  		int opcion=0;
+  		do{
+  			system("cls");
+    		printf("[ Menu Alta/Baja Socios ]\n[ 1 - Dar de Alta]\n[ 2 - Dar de Baja]\n[ 3 - Salir ]\n");
+			if(scanf("%d",&opcion)){
+				switch(opcion){
+				case 1:
+					altaSocio();
+					break;
+				case 2:
+					bajaSocio();
+					break;
+				case 3:
+					return;
+				default:
+					printf("Ingrese una opcion valida\n");
+					system("pause");
+					break;
+				}	
+			}
+			else{
+				printf("Ingrese una opcion valida\n");
+				system("pause");
+				system("cls");
+				fflush(stdin);
+			}
+						
+		}while(opcion==0);
+ 	}	
+ 	 
+ 	 
+			
+	
   	
   /*-------------------------------MENU GENERAL------------------------------------*/    
   	void menuGeneral(){
@@ -906,7 +994,7 @@ int main(int argc, char *argv[])
   		do{
   			system("cls");
   			printf("Club deportivo la Vuelta Olimpica\n");
-    		printf("[ Menu general ]\n[ 1 - Ingresos]\n[ 2 - Actualizaciones]\n[ 3 - Listados ]\n[ 4 - Salir ]\n");
+    		printf("[ Menu general ]\n[ 1 - Ingresos]\n[ 2 - Actualizaciones]\n[ 3 - Listados ]\n[ 4 - Alta/Baja Socios ]\n[ 5 - Inscripciones a Actividades ]\n[ 6 - Pago De Cuotas ]\n[ 7 - Salir ]\n");
 			if(scanf("%d",&opcion)){
 				switch(opcion){
 				case 1:
@@ -918,7 +1006,14 @@ int main(int argc, char *argv[])
 				case 3:
 					menuListados();
 				case 4:
+					menuAltaBaja();
 					return;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
 				default:
 					printf("Ingrese una opcion valida\n");
 					system("pause");
