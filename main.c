@@ -935,6 +935,7 @@ int main(int argc, char *argv[])
 				case 6:
 					socio = Socio_new();
 					listarConWhere(socio,"activo = TRUE");
+					break;
 				case 7:
 					return;
 				default:
@@ -985,7 +986,7 @@ int main(int argc, char *argv[])
  	}	
  	 
  	 
-			
+	
 	
   	
   /*-------------------------------MENU GENERAL------------------------------------*/    
@@ -1007,13 +1008,12 @@ int main(int argc, char *argv[])
 					menuListados();
 				case 4:
 					menuAltaBaja();
-					return;
 				case 5:
 					break;
 				case 6:
 					break;
 				case 7:
-					break;
+					return;
 				default:
 					printf("Ingrese una opcion valida\n");
 					system("pause");
