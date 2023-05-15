@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
   obj_Actividad *actividad;
   obj_Lugar *lugar;
   obj_Cuotas *cuota;
-  
+  obj_ActividadSocio *actividadSocio;
   
   void *list,*itm;
   int i=0,size=0, sizeEnf=0;
@@ -910,7 +910,7 @@ int main(int argc, char *argv[])
   		int opcion;
   		do{
   			system("cls");
-   			printf("[ Menu listados ]\n[ 1 - Listar Tipos de Actividades]\n[ 2 - Listar Profesores]\n[ 3 - Listar Localidades]\n[ 4 - Listar Actividades]\n[ 5 - Listar Lugares]\n[ 6 - Socios Activos ]\n[ 7 - Volver]\n");
+   			printf("[ Menu listados ]\n[ 1 - Listar Tipos de Actividades]\n[ 2 - Listar Profesores]\n[ 3 - Listar Localidades]\n[ 4 - Listar Actividades De Un Socio]\n[ 5 - Listar Lugares]\n[ 6 - Socios Activos ]\n[ 7 - Socios Morosos ]\n[ 7 - Volver]\n");
 			if(scanf("%d",&opcion)){
 				switch(opcion){
 				case 1:
@@ -926,8 +926,23 @@ int main(int argc, char *argv[])
 					listar(localidad);
 					break;
 				case 4:
-					actividad = Actividad_new();
-					listar(actividad);
+					socio = Socio_new();
+					listar(socio);
+					printf("Ingrese El numero de socio\n");
+					if(scanf("%d",&opcion)){
+						socio->findbykey(socio,opcion);
+						socio->toString(socio);
+						actividadSocio = ActividadSocio_new();
+						printf("actividades del socio numero: %d\n",opcion);
+						char where[50];
+						sprintf(where,"nro_socio = %d",opcion);
+						listarConWhere(actividadSocio,where);
+						system("pause");
+					}
+					else{
+						printf("Ingrese una opcion correcta\n");
+						system("pause");
+					}
 					break;
 				case 5:
 					lugar = Lugar_new();
@@ -953,6 +968,7 @@ int main(int argc, char *argv[])
 							}
 							break;
 						case 2: 
+							listarConWhere(socio,"activo = TRUE");
 							break;
 						case 3:
 							break;
