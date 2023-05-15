@@ -599,6 +599,7 @@ int main(int argc, char *argv[])
 		  
 		if(!lugar->saveObj(lugar)){
   			printf("Ocurrio un error al agregar Lugar:\n%s\n",getLastError());
+  			system("pause");
   		}
   		else{
   			printf("Lugar Agregado\n\n");
@@ -934,7 +935,35 @@ int main(int argc, char *argv[])
 					break;					
 				case 6:
 					socio = Socio_new();
-					listarConWhere(socio,"activo = TRUE");
+					printf("Filtrar Por Localidad?\n[ 1 - Si]\n[ 2 - No]\n[ 3 - Volver]\n");
+					if(scanf("%d",&opcion)){
+						switch(opcion){
+						case 1:
+							localidad = Localidad_new();
+							listar(localidad);
+							printf("Ingrese Codigo Postal\n");
+							if(scanf("%d",&opcion)){
+								char where[100];
+								sprintf(where,"activo = TRUE and cod_postal = %d",opcion);
+								listarConWhere(socio,where);
+							}
+							else{
+								printf("Ingrese una opcion correcta\n");
+								system("pause");
+							}
+							break;
+						case 2: 
+							break;
+						case 3:
+							break;
+						default:
+							break;
+						}
+					}
+					else{
+						printf("Ingrese una opcion correcta\n");
+						system("pause");
+					}
 					break;
 				case 7:
 					return;
