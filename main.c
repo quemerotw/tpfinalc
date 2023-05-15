@@ -153,6 +153,7 @@ int main(int argc, char *argv[])
 			printf("Ingrese un codigo valido\n");
 			return;
 		}
+		destroyObj(socio);
 	}
 		  
 	/*-------------------------------BAJA SOCIO-------------------------------------*/
@@ -181,6 +182,7 @@ int main(int argc, char *argv[])
 			printf("Ingrese un codigo valido\n");
 			return;
 		}
+		destroyObj(socio);
 	}
 	
 	  /*-------------------------------ACTUALIZAR SOCIO-------------------------------------*/
@@ -572,10 +574,12 @@ int main(int argc, char *argv[])
   		profesor = Profesor_new();
   		tipoActividad = TipoActividad_new();
   		
+  		listar(tipoActividad);
 		printf("Ingrese el codigo del tipo de actividad:");
    		scanf("%d",&codigoTipoActividad);
 		fflush(stdin);
 
+		listar(profesor);
     	printf("Ingrese el legajo del profesor:");
     	scanf("%d",&legajoProfesor);
 		fflush(stdin);
@@ -583,6 +587,7 @@ int main(int argc, char *argv[])
   		if(!actividad->saveObj(actividad))
   		{
   			printf("Ocurrio un error al agregar la actividad:\n%s\n",getLastError());
+  			system("pause");
   		}
   		destroyObj(actividad); 
   	}
@@ -1031,7 +1036,60 @@ int main(int argc, char *argv[])
  	}	
  	 
  	 
-	
+	void inscribirSocio(){
+		int opcion;
+		socio=Socio_new();
+		actividadSocio = ActividadSocio_new();
+		listarConWhere(socio,"activo = TRUE");
+		printf("Ingrese el Numero del Socio que desea inscribir en una actividad\n");
+		if(scanf("%d",&opcion)){
+			if(socio->findbykey(socio,opcion) != NOT_FOUND){
+				if(socio->getActivo){
+					actividadSocio->setNroSocio(actividadSocio,opcion);
+					tipoActividad = TipoActividad_new();
+					listar(tipoActividad);
+					printf("Ingrese El codigo de tipo de actividad a la que se quiere inscribir\n");
+					if(scanf("%d",&opcion)){
+						actividad = Actividad_new();
+						char where[50];
+						sprintf(where,"cod_tipo_act = %d",opcion);
+						listarConWhere(actividad,where);
+						printf("seleccione el codigo de la actividad a la que se desea inscribir\n");
+						if(scanf("%d",&opcion)){
+							if(actividad->findbykey(socio,opcion)!= NOT_FOUND){
+								actividadSocio->setCodAct(actividadSocio,opcion);
+								char fecha[20];
+								printf("ingrese la fecha de inicio de la inscripcion\n");
+								gets(fecha);
+								actividadSocio->setFechaInicio(actividadSocio,fecha);
+								actividadSocio->setFechaFin(actividadSocio,"NULL");
+							}
+							else{
+								printf("Actividad no encontrada\n");
+								system("pause");
+							}
+						}
+						else{
+							printf("Opcion no valida\n");
+							system("pause");
+						}
+					}
+					else{
+						printf("Opcion no valida\n");
+						system("pause");
+					}
+				}
+			}
+			else{
+				printf("Socio no encontrado\n");
+				system("pause");
+			}	
+		}
+		else{
+			printf("Opcion no valida\n");
+			system("pause");
+		}
+	}
 	
   	
   /*-------------------------------MENU GENERAL------------------------------------*/    
@@ -1054,6 +1112,7 @@ int main(int argc, char *argv[])
 				case 4:
 					menuAltaBaja();
 				case 5:
+					inscribirSocio();
 					break;
 				case 6:
 					break;
