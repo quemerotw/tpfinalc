@@ -108,11 +108,16 @@ int main(int argc, char *argv[])
  */
     void listar(void *obj){
 		size = ((Object *)obj)->findAll(obj,&list,NULL);
-		for(i=0;i<size;++i)
-  		{
-    		itm = ((Object **)list)[i];    
-    		((Object *)itm)->toString(itm);
-  		}
+		if(list!=NULL){
+			for(i=0;i<size;++i)
+  			{
+    			itm = ((Object **)list)[i];    
+    			((Object *)itm)->toString(itm);
+  			}
+		}
+		else{
+			printf("No hay nada para listar\n");	
+		}
   		system("pause");
   		destroyObjList(list,size);	
 	} 
@@ -166,7 +171,7 @@ int main(int argc, char *argv[])
 		printf("Ingrese el codigo de socio\n");
 		if(scanf("%d",&cod)){
 			if(socio->findbykey(socio,cod)){
-				socio->setActivo(socio,true);
+				socio->setActivo(socio,false);
 				if(!socio->saveObj(socio))
 					printf("Error al acutualizar\n%s\n",getLastError());
 				else
@@ -1109,8 +1114,10 @@ int main(int argc, char *argv[])
 					break;
 				case 3:
 					menuListados();
+					break;
 				case 4:
 					menuAltaBaja();
+					break;
 				case 5:
 					inscribirSocio();
 					break;
