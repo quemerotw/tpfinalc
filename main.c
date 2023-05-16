@@ -106,9 +106,28 @@ int main(int argc, char *argv[])
   destroyObjList(list,size);
   destroyObj(soc);
  */
+ 
+	int acendente(const void* a,const void *b){
+		return (*(int *)a - *(int *)b);
+	}
+	
+	int desendente(const void* a,const void *b){
+		return (*(int *)a - *(int *)b)*-1;
+	}
+
+ 
     void listar(void *obj){
 		size = ((Object *)obj)->findAll(obj,&list,NULL);
 		if(list!=NULL){
+			int opcion;
+			printf("Listar de forma acendente o desencente?\n[ 1 - Acendente]\n[ 2 - Decendente]\n");
+			scanf("%d",&opcion);
+			if(opcion==1){
+				qsort(list,size,sizeof(int),acendente);
+			}
+			else{
+				qsort(list,size,sizeof(int),desendente);	
+			}
 			for(i=0;i<size;++i)
   			{
     			itm = ((Object **)list)[i];    
