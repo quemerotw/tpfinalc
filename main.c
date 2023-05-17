@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
   obj_Lugar *lugar;
   obj_Cuotas *cuota;
   obj_ActividadSocio *actividadSocio;
+  obj_Horario *horario;
   
   void *list,*itm;
   int i=0,size=0, sizeEnf=0;
@@ -591,30 +592,45 @@ int main(int argc, char *argv[])
 		destroyObj(tipoActividad);
   	}  
   /*-------------------------------INGRESAR ACTIVIDAD-------------------------------------*/   
-    void ingresarActividad(){
-  		int codigoTipoActividad;
-  		int legajoProfesor;
+  	void ingresarActividad(){
+  		char cadena[20];
+  		int num;
 		actividad = Actividad_new();
-  		profesor = Profesor_new();
-  		tipoActividad = TipoActividad_new();
-  		
-  		listar(tipoActividad);
-		printf("Ingrese el codigo del tipo de actividad:");
-   		scanf("%d",&codigoTipoActividad);
+		tipoActividad = TipoActividad_new();
+		profesor = Profesor_new();
+		listarConWhere(tipoActividad,NULL);
+		printf("Ingrese el codigo de tipo actividad\n");
 		fflush(stdin);
-
-		listar(profesor);
-    	printf("Ingrese el legajo del profesor:");
-    	scanf("%d",&legajoProfesor);
-		fflush(stdin);
-
-  		if(!actividad->saveObj(actividad))
-  		{
-  			printf("Ocurrio un error al agregar la actividad:\n%s\n",getLastError());
-  			system("pause");
-  		}
-  		destroyObj(actividad); 
-  	}
+    	if(scanf("%d",&num)){
+    		if(tipoActividad->findbykey(tipoActividad,num)!=NOT_FOUND){
+    			actividad->setCodTipoAct(actividad,num);
+			}
+			else{
+				printf("tipo actividad no encontrada");
+			}
+			listarConWhere(profesor,NULL);
+			printf("Ingrese el legajo del profesor");				
+			scanf("%d",&num);
+    		if(profesor->findbykey(profesor,num)!=NOT_FOUND){
+    			actividad->setLegajoProfe(actividad,num);
+			}
+			else{
+				printf("profesor no encontrado");
+			}
+			printf("Ingrese fecha desde\n");
+			fflush(stdin);
+			if(gets(cadena)){
+				actividad->setFechaDesde(actividad,cadena);
+			}
+			printf("Ingrese fecha hasta\n");
+			fflush(stdin);
+			if(gets(cadena)){
+				actividad->setFechaDesde(actividad,cadena);
+			}
+		}
+		destroyObj(actividad);
+		return;
+  	} 
   /*-----------------------------INGRESAR LUGAR----------------------------------*/
   	void ingresarLugar(){
 		char nombre[90];
@@ -788,8 +804,47 @@ int main(int argc, char *argv[])
 		return;
 		destroyObj(tipoActividad);
   	}
+  	/*-------------------------------INGRESAR HORARIO---------------------------------------*/
+  	void ingresarHorario(){
+  		char cadena[20];
+  		int num;
+		horario = Horario_new();
+		actividad = Actividad_new();
+		lugar = Lugar_new();
+		listar(actividad);
+		printf("Ingrese el codigo de actividad\n");
+		fflush(stdin);
+    	if(scanf("%d",&num)){
+    		if(actividad->findbykey(actividad,num)!=NOT_FOUND){
+    			horario->setCodAct(horario,num);
+			}
+			else{
+				printf("actividad no encontrada");
+			}
+			printf("Ingrese dia\n");
+			fflush(stdin);
+			if(scanf("%d",&num)){
+				horario->setDia(horario,num);
+			}
+			printf("Ingrese hora desde\n");
+			fflush(stdin);
+			if(scanf("%s",&cadena)){
+				horario->setHoraDesde(horario,cadena);
+			}
+			/*listar(lugar);
+			printf("Ingrese el codigo del lugar\n");
+			fflush(stdin);			
+    		if(lugar->findbykey(lugar,num)!=NOT_FOUND){
+    			horario->setCodLugar(horario,num);
+			}
+			else{
+				printf("actividad no encontrada");
+			}	*/
+		}
+		destroyObj(horario);
+		return;
+  	}  	
   	/*-------------------------------INGRESAR CUOTA---------------------------------------*/
-  	
   	void ingresarCuota(){
   		char nombre[20];
   		int num;
@@ -805,7 +860,7 @@ int main(int argc, char *argv[])
 			else{
 				printf("socio no encontrado");
 			}
-			printf("Ingrese el Año\n");
+			printf("Ingrese el Aï¿½o\n");
 			fflush(stdin);
 			if(scanf("%d",&num)){
 				cuota->setAnio(cuota,num);
@@ -848,7 +903,7 @@ int main(int argc, char *argv[])
 	  	}  	
 		return;
 		destroyObj(cuota);
-  }
+  	}
   	
   /*-------------------------------MENU ACTUALIZAR---------------------------------------*/     
   	void menuActualizar(){
@@ -894,7 +949,7 @@ int main(int argc, char *argv[])
   		int opcion;
   		do{
   			system("cls");
-   			printf("[ Menu ingresos ]\n[ 1 - Tipo Actividad]\n[ 2 - Profesor]\n[ 3 - Localidad]\n[ 4 - Actividad]\n[ 5 - Lugar]\n[ 6 - Socio]\n[ 7 - Cuotas]\n[ 8 - Salir]\n");
+   			printf("[ Menu ingresos ]\n[ 1 - Tipo Actividad]\n[ 2 - Profesor]\n[ 3 - Localidad]\n[ 4 - Actividad]\n[ 5 - Lugar]\n[ 6 - Socio]\n[ 7 - Cuotas]\n[ 8 - Horario]\n[ 9 - Salir]\n");
 			if(scanf("%d",&opcion)){
 				switch(opcion){
 				case 1:
@@ -917,8 +972,11 @@ int main(int argc, char *argv[])
 					break;	
 				case 7: 
 					ingresarCuota();
-					break;				
-				case 8:
+					break;	
+				case 8: 
+					ingresarHorario();
+					break;								
+				case 9:
 					system("cls");
 					return;					
 				default:
@@ -939,7 +997,7 @@ int main(int argc, char *argv[])
   		int opcion;
   		do{
   			system("cls");
-   			printf("[ Menu listados ]\n[ 1 - Listar Tipos de Actividades]\n[ 2 - Listar Profesores]\n[ 3 - Listar Localidades]\n[ 4 - Listar Actividades De Un Socio]\n[ 5 - Listar Lugares]\n[ 6 - Socios Activos ]\n[ 7 - Socios Morosos ]\n[ 7 - Volver]\n");
+   			printf("[ Menu listados ]\n[ 1 - Listar Tipos de Actividades]\n[ 2 - Listar Profesores]\n[ 3 - Listar Localidades]\n[ 4 - Listar Actividades De Un Socio]\n[ 5 - Listar Lugares]\n[ 6 - Socios Activos ]\n[ 7 - Socios Morosos ]\n[ 8 - Volver]\n");
 			if(scanf("%d",&opcion)){
 				switch(opcion){
 				case 1:
@@ -1011,6 +1069,39 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case 7:
+					socio = Socio_new();
+					printf("Filtrar Por Localidad?\n[ 1 - Si]\n[ 2 - No]\n[ 3 - Volver]\n");
+					if(scanf("%d",&opcion)){
+						switch(opcion){
+						case 1:
+							localidad = Localidad_new();
+							listar(localidad);
+							printf("Ingrese Codigo Postal\n");
+							if(scanf("%d",&opcion)){
+								char where[100];
+								sprintf(where,"moroso = TRUE and cod_postal = %d",opcion);
+								listarConWhere(socio,where);
+							}
+							else{
+								printf("Ingrese una opcion correcta\n");
+								system("pause");
+							}
+							break;
+						case 2: 
+							listarConWhere(socio,"moroso = TRUE");
+							break;
+						case 3:
+							break;
+						default:
+							break;
+						}
+					}
+					else{
+						printf("Ingrese una opcion correcta\n");
+						system("pause");
+					}
+					break;
+				case 8:
 					return;
 				default:
 					printf("Ingrese una opcion valida ingresos \n");
@@ -1158,8 +1249,9 @@ int main(int argc, char *argv[])
 			}
 						
 		}while(1);		
- 	 }	
+ 	}	
   
   	menuGeneral();
-  return 0;
+    return 0;
 }
+
