@@ -617,16 +617,12 @@ int main(int argc, char *argv[])
 			else{
 				printf("profesor no encontrado");
 			}
-			printf("Ingrese fecha desde\n");
-			fflush(stdin);
-			if(gets(cadena)){
-				actividad->setFechaDesde(actividad,cadena);
-			}
-			printf("Ingrese fecha hasta\n");
-			fflush(stdin);
-			if(gets(cadena)){
-				actividad->setFechaDesde(actividad,cadena);
-			}
+			strcpy(cadena,getFecha());
+			actividad->setFechaDesde(actividad,cadena);
+			actividad->setFechaDesde(actividad,"null");
+			if(!actividad->saveObj(actividad)){
+	  			printf("Ocurrio un error al actualizar la actividad:\n%s\n",getLastError());
+	  		}
 		}
 		destroyObj(actividad);
 		return;
@@ -892,7 +888,10 @@ int main(int argc, char *argv[])
 			printf("ingrese opcion valida\n");
 			fflush(stdin);
 		}
-		cuota->setEstado(cuota,"P");
+		setDebug(true);
+		cuota->setEstado(cuota,"i");
+		cuota->setFechaPago(cuota,"NULL");
+	  	cuota->setFechaVenc(cuota,"NULL");
 		if(!cuota->saveObj(cuota)){
   			printf("Ocurrio un error al agregar la cuota:\n%s\n",getLastError());
   			system("pause");
@@ -1168,14 +1167,14 @@ int main(int argc, char *argv[])
 						actividad = Actividad_new();
 						char where[50];
 						sprintf(where,"cod_tipo_act = %d",opcion);
-						listarConWhere(actividad,where);
+						listar(actividad);
 						printf("seleccione el codigo de la actividad a la que se desea inscribir\n");
 						if(scanf("%d",&opcion)){
 							if(actividad->findbykey(socio,opcion)!= NOT_FOUND){
 								actividadSocio->setCodAct(actividadSocio,opcion);
 								char fecha[20];
 								printf("ingrese la fecha de inicio de la inscripcion\n");
-								gets(fecha);
+								strcpy(fecha,getFechaHora());
 								actividadSocio->setFechaInicio(actividadSocio,fecha);
 								actividadSocio->setFechaFin(actividadSocio,"NULL");
 							}
